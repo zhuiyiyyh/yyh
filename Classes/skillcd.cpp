@@ -26,8 +26,13 @@ void SkillCD::setSkillCDFile(std::string strFileName)
 	m_pProgressTimer->setPercentage(100.f);
 	m_pProgressTimer->setVisible(false);
 	this->addChild(m_pProgressTimer);
-	m_pProgressTimer->setPosition(Vec2::ZERO);
-	m_pProgressTimer->setAnchorPoint(Vec2::ZERO);
+	Button *pButton = dynamic_cast<Button*>(this->getParent());
+	if (pButton)
+	{
+		m_pProgressTimer->setPosition(Vec2(pButton->getContentSize().width / 2, pButton->getContentSize().height/ 2));
+	}
+	
+	//m_pProgressTimer->setAnchorPoint(Vec2::ZERO);
 }
 void SkillCD::setSkillCD(int cd)
 {

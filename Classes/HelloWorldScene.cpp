@@ -94,7 +94,7 @@ bool HelloWorld::init()
 	Button *pButton = dynamic_cast<Button*>(rootNode->getChildByName("Button_1"));
 	if (pButton)
 	{
-		pButton->addTouchEventListener(this, toucheventselector(HelloWorld::SkillCDCallBack));
+		pButton->addTouchEventListener(CC_CALLBACK_2(HelloWorld::SkillCDCallBack,this));
 		SkillCD *pSkillCD = SkillCD::create();
 		if (pSkillCD)
 		{
@@ -104,7 +104,33 @@ bool HelloWorld::init()
 			pSkillCD->setSkillCDFile(pButton->getDisabledFile().file);
 		}
 	}
-	
+	pButton = dynamic_cast<Button*>(rootNode->getChildByName("Button_2"));
+	if (pButton)
+	{
+		pButton->addTouchEventListener(CC_CALLBACK_2(HelloWorld::SkillCDCallBack, this));
+		SkillCD *pSkillCD = SkillCD::create();
+		if (pSkillCD)
+		{
+			pSkillCD->setTag(1000);
+			pButton->addChild(pSkillCD);
+			pSkillCD->setSkillCD(10);
+			pSkillCD->setSkillCDFile(pButton->getDisabledFile().file);
+		}
+	}
+	pButton = dynamic_cast<Button*>(rootNode->getChildByName("Button_3"));
+	if (pButton)
+	{
+		pButton->addTouchEventListener(CC_CALLBACK_2(HelloWorld::SkillCDCallBack, this));
+		SkillCD *pSkillCD = SkillCD::create();
+		if (pSkillCD)
+		{
+			pSkillCD->setTag(1000);
+			pButton->addChild(pSkillCD);
+			pSkillCD->setSkillCD(10);
+			pSkillCD->setSkillCDFile(pButton->getDisabledFile().file);
+		}
+	}
+
     return true;
 }
 void HelloWorld::SkillCDCallBack(Ref *pSender, Widget::TouchEventType type)
