@@ -12,18 +12,20 @@
 using namespace cocos2d;
 using namespace ui;
 
-class SkillCD : public Button
+class SkillCD : public Layer
 {
+	DECLARE_CLASS_GUI_INFO
 public:
 	SkillCD();
-	~SkillCD();
+	virtual ~SkillCD();
 	CREATE_FUNC(SkillCD);
 	void setSkillCDFile(std::string strFileName);
 	void setSkillStart();
 	void setSkillCD(int cd);
-	void updateCD(float dt);
+	
 	bool getTouch(){return m_bTouch; }
 private:
+	void updateCD(float dt);
 	float m_nSkillCDTime;//cd ±º‰
 	float m_nSkillCDTimeMax;
 	ProgressTimer *m_pProgressTimer;

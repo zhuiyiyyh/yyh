@@ -11,6 +11,7 @@ SkillCD::SkillCD()
 SkillCD::~SkillCD()
 {
 	m_pProgressTimer = NULL;
+	this->unscheduleUpdate();
 }
 
 void SkillCD::setSkillCDFile(std::string strFileName)
@@ -25,8 +26,8 @@ void SkillCD::setSkillCDFile(std::string strFileName)
 	m_pProgressTimer->setPercentage(100.f);
 	m_pProgressTimer->setVisible(false);
 	this->addChild(m_pProgressTimer);
-	m_pProgressTimer->setPosition(Vec2(this->getContentSize().width / 2, this->getContentSize().height / 2));
-	m_pProgressTimer->setAnchorPoint(this->getAnchorPoint());
+	m_pProgressTimer->setPosition(Vec2::ZERO);
+	m_pProgressTimer->setAnchorPoint(Vec2::ZERO);
 }
 void SkillCD::setSkillCD(int cd)
 {
@@ -39,8 +40,15 @@ void SkillCD::setSkillStart()
 	{
 		m_bTouch = true;
 		m_bStartCD = true;
-		this->setTouchEnabled(false);
-		m_pProgressTimer->setVisible(true);
+		Button *pButton = dynamic_cast<Button*>(this->getParent());
+		if (pButton)
+		{
+			pButton->setTouchEnabled(false);
+		}
+		if (m_pProgressTimer)
+		{
+			m_pProgressTimer->setVisible(true);
+		}
 		schedule(schedule_selector(SkillCD::updateCD));
 	}
 }
@@ -49,19 +57,27 @@ void SkillCD::updateCD(float dt)
 {
 	if (m_bStartCD)
 	{
-		float fPercentage = m_pProgressTimer->getPercentage();
-		m_nSkillCDTime -= dt;
-		//CCLOG("%d", m_nSkillCDTime );
-		m_pProgressTimer->setPercentage(m_nSkillCDTime * 100 / m_nSkillCDTimeMax);
-		if (m_nSkillCDTime < 0)
+		if (m_pProgressTimer)
 		{
-			this->setTouchEnabled(true);
-			m_bStartCD = false;
-			m_bTouch = false;
-			m_nSkillCDTime = m_nSkillCDTimeMax;
-			unschedule(schedule_selector(SkillCD::updateCD));
-			m_pProgressTimer->setVisible(false);
-			m_pProgressTimer->setPercentage(100.f);
+			float fPercentage = m_pProgressTimer->getPercentage();
+			m_nSkillCDTime -= dt;
+			//CCLOG("%d", m_nSkillCDTime );
+			m_pProgressTimer->setPercentage(m_nSkillCDTime * 100 / m_nSkillCDTimeMax);
+			if (m_nSkillCDTime < 0)
+			{
+				Button *pButton = dynamic_cast<Button*>(this->getParent());
+				if (pButton)
+				{
+					pButton->setTouchEnabled(true);
+				}
+				m_bStartCD = false;
+				m_bTouch = false;
+				m_nSkillCDTime = m_nSkillCDTimeMax;
+				unschedule(schedule_selector(SkillCD::updateCD));
+				m_pProgressTimer->setVisible(false);
+				m_pProgressTimer->setPercentage(100.f);
+			}
 		}
+		
 	}
 }

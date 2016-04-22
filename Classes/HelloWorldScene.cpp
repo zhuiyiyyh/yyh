@@ -91,26 +91,39 @@ bool HelloWorld::init()
 	
 
 	
-	SkillCD *pSkillButton = static_cast<SkillCD *>(rootNode->getChildByName("Button_1"));
-	if (pSkillButton)
+	Button *pButton = dynamic_cast<Button*>(rootNode->getChildByName("Button_1"));
+	if (pButton)
 	{
-		pSkillButton->setPosition(Vec2(size.width / 2, size.height / 2));
-		pSkillButton->setSkillCD(10);
-		pSkillButton->setSkillCDFile("Default/Button_Disable.png");
-		pSkillButton->addTouchEventListener(CC_CALLBACK_2(HelloWorld::SkillCDCallBack, this));
+		pButton->addTouchEventListener(this, toucheventselector(HelloWorld::SkillCDCallBack));
+		SkillCD *pSkillCD = SkillCD::create();
+		if (pSkillCD)
+		{
+			pSkillCD->setTag(1000);
+			pButton->addChild(pSkillCD);
+			pSkillCD->setSkillCD(10);
+			pSkillCD->setSkillCDFile(pButton->getDisabledFile().file);
+		}
 	}
 	
     return true;
 }
 void HelloWorld::SkillCDCallBack(Ref *pSender, Widget::TouchEventType type)
 {
-	SkillCD *pSkillButton = (SkillCD*)pSender;
-	if (type == Widget::TouchEventType::ENDED)
+	Button *pButton = (Button*)pSender;
+	if (pButton)
 	{
-		if (!pSkillButton->getTouch())
+		if (type == Widget::TouchEventType::ENDED)
 		{
-			pSkillButton->setSkillStart();
-			//释放技能	
+			if (pButton->isTouchEnabled())
+			{
+				pButton->setTouchEnabled(false);
+				SkillCD* pSkillCD = dynamic_cast<SkillCD*>(pButton->getChildByTag(1000));
+				if (pSkillCD)
+				{
+					pSkillCD->setSkillStart();
+				}
+				//释放技能	
+			}
 		}
 	}
 }
